@@ -9,6 +9,7 @@
   <img src="https://i114.fastpic.ru/big/2021/0507/70/6f67ce44c4d96beeccc7cec7d5f07b70.png">
   <img src="https://i114.fastpic.ru/big/2021/0507/18/5ccda5086554b7980cdcdaf0b2801618.png">
 </p>
+
 # TODO:
 - Adding browser stealer Firefox, Yandex 
 - Fix problems
