@@ -12,6 +12,5 @@
 </p>
 
 # TODO:
-- Adding browser stealer Firefox, Yandex 
 - Fix problems
 - Optimize code
