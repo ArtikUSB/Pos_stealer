@@ -19,7 +19,7 @@ except Exception as e:
     pass
 
 #################################### LOGOUT ###################################################
-log_out = 0  # this is log_out for kill process stealer, (discord + telegram). 1 - on, 2 - off
+log_out = 0  # this is log_out for kill process stealer, (discord + telegram). 1 - on, 0 - off
 ###############################################################################################
 
 ################################### Send new victim messsage #############################
