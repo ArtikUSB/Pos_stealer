@@ -15,3 +15,4 @@
 - Fix problems
 - Optimize code
 - Fix A one problem with clean txt files with stealed browser passwords/Cookie
+- RE-WRITE STEALER for downloading stealer file :))))))))
