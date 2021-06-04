@@ -1,5 +1,5 @@
 # Pos_stealer
-<p>0.7</p>
+<p>0.7.1</p>
 <p>IP, Discord Token, Browser, Password Stealer</p>
 
 <p align="center">
