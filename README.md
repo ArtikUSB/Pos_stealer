@@ -3,7 +3,7 @@
 <p>IP, Discord Token, Browser, Password Stealer</p>
 
 <p align="center">
-  Stealer Is work! 
+  Stealer Is working! 
 </p>
 <p align="center">
   <img src="https://i114.fastpic.ru/big/2021/0515/12/f53b999b3d3729b7832520c8aad75d12.png">
