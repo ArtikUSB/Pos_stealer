@@ -1,6 +1,6 @@
 # Pos_stealer
-<p>0.7.1</p>
-<p>IP, Discord Token, Browser, Password Stealer</p>
+<p>0.8.2</p>
+<p>IP, Discord Token, Browser, Wifi, Windows Product Key,Password Stealer</p>
 
 <p align="center">
   Stealer Is working! 
