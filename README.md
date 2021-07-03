@@ -1,6 +1,6 @@
 # Pos_stealer
-<p>0.8.2</p>
-<p>IP, Discord Token, Browser, Wifi, Windows Product Key,Password Stealer</p>
+<p>0.8.9</p>
+<p>IP, Discord Token, Browser, Wifi, Txt files (on desktop) Windows Product Key,Password Stealer</p>
 
 <p align="center">
   Stealer Is working! 
@@ -12,7 +12,6 @@
 </p>
 
 # TODO:
-- Fix problems
-- Optimize code
-- Fix A one problem with clean txt files with stealed browser passwords/Cookie
-- RE-WRITE STEALER for downloading stealer file :))))))))
+- [x] Fix problems
+- [] Optimize code
+- [x] Fix A one problem with clean txt files with stealed browser passwords/Cookie
