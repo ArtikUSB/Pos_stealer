@@ -13,5 +13,5 @@
 
 # TODO:
 - [x] Fix problems
-- [] Optimize code
+- [ ] Optimize code
 - [x] Fix A one problem with clean txt files with stealed browser passwords/Cookie
