@@ -15,3 +15,4 @@
 - [x] Fix problems
 - [ ] Optimize code
 - [x] Fix A one problem with clean txt files with stealed browser passwords/Cookie
+- [ ] Firefox Steal
